@@ -15,10 +15,11 @@ class Personnage {
 	        $_niveau,
 	        $_experience;
 	        
-	const CEST_MOI = 1;
-	const PERSONNAGE_TUE = 2;
-	const PERSONNAGE_FRAPPE = 3;
+	const CEST_MOI = 1; // Constante renvoyée par la méthode `frapper` si on se frappe soi-même.
+	const PERSONNAGE_TUE = 2; // Constante renvoyée par la méthode `frapper` si on a tué le personnage en le frappant.
+	const PERSONNAGE_FRAPPE = 3; // Constante renvoyée par la méthode `frapper` si on a bien frappé le personnage.
 	
+	//getters
 	public function id() {return $this->_id;}
 	public function nom() {return $this->_nom;}
 	public function forcePerso(){return $this->_forcePerso;}
@@ -26,6 +27,7 @@ class Personnage {
 	public function niveau() {return $this->_niveau;}
 	public function experience() {return $this->_experience;}
 	
+	//setters
 	public function setId($id) {
 		$id = (int) $id;
 		
@@ -69,28 +71,66 @@ class Personnage {
 	}
 	
 	
+	//hydratation
+	public function hydrate(array $tableau) {
+		foreach($tableau as $key => $value) {
+			$method = 'set'.ucfirst($key);
+      
+			if (method_exists($this, $method)) {
+				$this->$method($value);
+			}
+		}
+	}
+	
+	
+	//constructeur
+	public function __construct(array $donnees) {
+		$this->hydrate($donnees);
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	//méthode pour frapper
 	public function frapper(Personnage $cible){
-		//vérifier que la cible ne s'attaque pas elle-même
-		//erreur si oui
+		//vérifier que la perso ne s'attaque pas lui-même, erreur si oui
+		if ($cible->id() == $this->_id) {
+			return self::CEST_MOI;
+		}
 		
 		//frapper la cible
 		//dire ce qu'il se passe
 		//gagner exp
+		
+		
+		return $cible->recevoirDegats($this->forcePerso);
 	}
 	
 	
 	//méthode pour recevoir des dégâts
-	public function recevoirDegats(Personnage $agresseur){
+	public function recevoirDegats(int $damage){
 		//recevoir dégâts
+		$this->_degats += $damage;
+		
 		//dire ce qu'il se passe
 		
-		//vérifier le taux de dégats
-		//si >100 tuer le perso
-			//message de mort
+		//vérifier le taux de dégats, si >100 tuer le perso
+		if ($this->_degats >= 100) {
+			return self::PERSONNAGE_TUE;
+			
+			//message de mort?
+			
+		}
+			
 		//si certain seuil atteint se plaindre
+		
+		
+		
+		return self::PERSONNAGE_FRAPPE;
 	}
 	
 	
