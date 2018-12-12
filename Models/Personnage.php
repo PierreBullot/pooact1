@@ -36,7 +36,7 @@ class Personnage {
 		}
 	}
 	public function setNom($nom) {
-		if (is_string($nom)) {
+		if (is_string($nom) && strlen($nom) <= 30) {
 			$this->_nom = $nom;
 		}
 	}
